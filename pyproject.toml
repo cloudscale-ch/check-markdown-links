@@ -1,0 +1,32 @@
+[project]
+name = "check_markdown_links"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = ["mistletoe==1.4.0"]
+
+[project.optional-dependencies]
+dev = ["pytest", "mypy"]
+
+[project.scripts]
+check-markdown-links = "check_markdown_links:entry_point"
+
+[tool.mypy]
+mypy_path = "$MYPY_CONFIG_FILE_DIR/src:$MYPY_CONFIG_FILE_DIR/tests"
+files = ["src", "tests"]
+strict = true
+enable_error_code = "unreachable, redundant-expr, possibly-undefined, truthy-bool, truthy-iterable, unused-awaitable, explicit-override, mutable-override"
+
+[[tool.mypy.overrides]]
+module = "mistletoe.*"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = "tests"
+
+[tool.black]
+target-version = ["py312"]
+skip-magic-trailing-comma = true
+
+[tool.isort]
+profile = "black"
+force_single_line = true
