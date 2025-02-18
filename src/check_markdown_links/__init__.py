@@ -137,7 +137,7 @@ class Application:
             self.log_error(
                 source_path,
                 token,
-                f'Referenced file {rel_path(target_path)}" does not exist.',
+                f"Referenced file '{rel_path(target_path)}' does not exist.",
             )
             return
 
@@ -152,13 +152,17 @@ class Application:
 
             if url_parts.fragment not in heading_ids:
                 headings_list_str = "\n".join(f"    #{i}" for i in heading_ids)
+
+                # Add a newline after the list to make it easier to read.
                 self.log_error(
                     source_path,
                     token,
-                    f"No heading #{url_parts.fragment} exists in referenced file "
-                    f'"{rel_path(target_path)}.\n'
-                    "The following headings are available:\n"
-                    f"{headings_list_str}",
+                    (
+                        f"No heading #{url_parts.fragment} exists in referenced file "
+                        f"'{rel_path(target_path)}'.\n"
+                        "The following headings are available:\n"
+                        f"{headings_list_str}\n"
+                    ),
                 )
 
     def check_file(self, path: Path) -> None:
