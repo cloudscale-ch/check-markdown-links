@@ -1,0 +1,10 @@
+- id: check-markdown-links
+  name: Check local links in Markdown files
+  entry: check-markdown-links
+  language: python
+  language_version: "3.12"
+  types: [markdown]
+  # This is faster than running a separate instance for each file.
+  # The command needs to parse referenced files and caches the results.
+  require_serial: true
+  stages: [pre-commit]

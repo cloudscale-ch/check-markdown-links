@@ -23,6 +23,22 @@ options:
   -h, --help  show this help message and exit
 ```
 
+## Pre-Commit Hook
+
+Set up a [`pre-commit`](https://pre-commit.com/) hook that runs this script:
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: /Users/cs/Documents/Cloudscale/Code/check-markdown-links
+    rev: main
+    hooks:
+      - id: check-markdown-links
+        # Files in captain/api/docs/ can reference sections in the generated
+        # API docs that are generated and not present in the source Markdown files.
+        exclude: ^captain/api/docs/
+```
+
 ## Development Setup
 
 ```shell
