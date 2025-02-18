@@ -29,6 +29,16 @@ def rel_path(path: Path) -> Path:
     return path.relative_to(Path().resolve(), walk_up=True)
 
 
+def iter_markdown_files(dir_path: Path) -> Iterator[Path]:
+    for dirpath, dirnames, filenames in dir_path.walk():
+        for names in dirnames, filenames:
+            names[:] = [i for i in names if not i.startswith(".")]
+
+        for i in filenames:
+            if i.endswith(".md"):
+                yield dirpath / i
+
+
 def walk_tokens(root: Token) -> Iterator[Token]:
     """
     Iterate over all tokens in the tree under the specified token.
@@ -87,7 +97,7 @@ class LoadedFile:
 def load_markdown_file(path: Path) -> LoadedFile:
     assert path.is_absolute()
 
-    document = parse_markdown(path.read_text())
+    document = parse_markdown(path.read_text(errors="replace"))
     heading_ids = []
 
     for token in walk_tokens(document):
@@ -178,14 +188,19 @@ class Application:
 def parse_args() -> Namespace:
     parser = ArgumentParser(
         description=(
-            "Check the specified files for invalid links to local files, all other URLs"
-            " are ignored. The command checks that the files referenced by regular"
-            " links (`[Text](other_file.md)`) and image links (`![Text](image.png)`)"
-            " exits. If a regular link references a heading (`other_file.md#heading`),"
-            " the command checks that the referenced file contains a matching heading."
+            "Check the specified Markdown files for invalid links to local files."
         )
     )
-    parser.add_argument("files", type=Path, nargs="+")
+    parser.add_argument(
+        "files",
+        type=Path,
+        nargs="*",
+        default=[Path()],
+        help=(
+            "Markdown files to check. Directories are searched recursively. "
+            "Defaults to the current directory."
+        ),
+    )
 
     return parser.parse_args()
 
@@ -193,8 +208,22 @@ def parse_args() -> Namespace:
 def main(files: list[Path]) -> None:
     application = Application()
 
-    for path in files:
-        application.check_file(path.resolve())
+    for root_path in files:
+        if root_path.is_dir():
+            paths = list(iter_markdown_files(root_path))
+
+            if not paths:
+                logging.warning(
+                    f"warning: No files ending in '.md' found in '{root_path}'."
+                )
+        elif root_path.exists():
+            paths = [root_path]
+        else:
+            logging.error(f"error: '{root_path}' does not exist.")
+            sys.exit(2)
+
+        for path in paths:
+            application.check_file(path.resolve())
 
     # Print some statistics.
     num_links = application.num_links_checked
