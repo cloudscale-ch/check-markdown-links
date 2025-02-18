@@ -100,6 +100,8 @@ def load_markdown_file(path: Path) -> LoadedFile:
 @dataclass
 class Application:
     has_errors: bool = False
+    num_files_checked: int = 0
+    num_links_checked: int = 0
 
     def log_error(self, path: Path, token: Token, message: str) -> None:
         # Log the absolute path of the file containing the error so
@@ -108,6 +110,8 @@ class Application:
         self.has_errors = True
 
     def check_link(self, source_path: Path, token: Link | Image) -> None:
+        self.num_links_checked += 1
+
         # Ignore links that reference a footnote.
         if token.dest_type != "uri":
             return
@@ -158,6 +162,8 @@ class Application:
                 )
 
     def check_file(self, path: Path) -> None:
+        self.num_files_checked += 1
+
         loaded_document = load_markdown_file(path)
 
         for token in walk_tokens(loaded_document.document):
@@ -185,6 +191,16 @@ def main(files: list[Path]) -> None:
 
     for path in files:
         application.check_file(path.resolve())
+
+    # Print some statistics.
+    num_links = application.num_links_checked
+    num_files = application.num_files_checked
+    num_additional = load_markdown_file.cache_info().currsize - num_files
+
+    logging.info(f"Checked {num_links} links in {num_files} files.")
+
+    if num_additional:
+        logging.info(f"Parsed {num_additional} additional referenced files.")
 
     if application.has_errors:
         sys.exit(1)
