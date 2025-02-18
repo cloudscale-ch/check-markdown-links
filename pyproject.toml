@@ -1,6 +1,6 @@
 [project]
 name = "check_markdown_links"
-version = "0.1.0"
+version = "1.0.0"
 requires-python = ">=3.12"
 dependencies = ["mistletoe==1.4.0"]
 
