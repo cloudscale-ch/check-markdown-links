@@ -1,5 +1,7 @@
 # check-markdown-links
 
+![Icon used on a web page, showing that an image couldn't be loaded](images/netscape-broken-image.png)
+
 ## Usage
 
 `check-markdown-links` checks the specified files for invalid links. Only links to local
