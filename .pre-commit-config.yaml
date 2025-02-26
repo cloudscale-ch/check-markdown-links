@@ -39,3 +39,11 @@ repos:
         # have to be re-computed in each process.
         require_serial: true
         pass_filenames: false
+  - repo: https://github.com/cloudscale-ch/check-markdown-links
+    rev: 1.0.0
+    hooks:
+      - id: check-markdown-links
+        # Files in captain/api/docs/ can reference sections in the
+        # API docs that are generated and not present in the source
+        # Markdown files.
+        exclude: ^captain/api/docs/
