@@ -3,24 +3,24 @@ default_install_hook_types: [pre-commit]
 
 repos:
   - repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
+    rev: 8.0.1
     hooks:
       - id: isort
         stages: [pre-commit, manual]
   - repo: https://github.com/psf/black
-    rev: 24.4.2
+    rev: 26.3.1
     hooks:
       - id: black
         stages: [pre-commit, manual]
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
         stages: [pre-commit, manual]
       - id: end-of-file-fixer
         stages: [pre-commit, manual]
   - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.17
+    rev: 1.0.0
     hooks:
       - id: mdformat
         stages: [pre-commit, manual]
@@ -40,7 +40,7 @@ repos:
         require_serial: true
         pass_filenames: false
   - repo: https://github.com/cloudscale-ch/check-markdown-links
-    rev: 1.0.0
+    rev: 1.1.0
     hooks:
       - id: check-markdown-links
         # Files in captain/api/docs/ can reference sections in the
